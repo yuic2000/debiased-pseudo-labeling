@@ -95,6 +95,17 @@ def plot_confusion_matrix(conf_mat, ranked, class_names, save_path):
     plt.xticks(tick_indices, tick_labels, rotation=90, ha='right', fontsize=5)
     plt.yticks(tick_indices, tick_labels, fontsize=5)
 
+    # Overlay numeric values
+    max_val = conf_sorted.max()
+    black_lower_bound = 15
+    black_upper_bound = 35
+    for i in range(conf_sorted.shape[0]):
+        for j in range(conf_sorted.shape[1]):
+            val = conf_sorted[i, j]
+            if val >= 0:
+                color = "black" if black_lower_bound < val < black_upper_bound else "white"
+                plt.text(j, i, f"{val:.0f}", ha='center', va='center', color=color, fontsize=3)
+
     plt.tight_layout()
     plt.savefig(save_path, dpi=300)
     plt.close()
@@ -136,13 +147,15 @@ def compute_centroid_similarity_clip(logits, preds, ranked, names, save_path='ce
 
         # --- top-10 lists ---
         f.write("\\textbf{Top-10 similar classes for most predicted:}\\\\\n")
+        f.write("\\textbf{Rank} & \\textbf{Class} & \\textbf{Cosine_Similarity}\\\\\n")
         for i, idx in enumerate(top10_most, 1):
-            f.write(f"{i}. {names[idx]} (cos={sim_most[idx]:.3f})\\\\\n")
+            f.write(f"{i} & {names[idx]} & {sim_most[idx]:.4f} \\\\\n")
         f.write("\n")
 
         f.write("\\textbf{Top-10 similar classes for least predicted:}\\\\\n")
+        f.write("\\textbf{Rank} & \\textbf{Class} & \\textbf{Cosine_Similarity}\\\\\n")
         for i, idx in enumerate(top10_least, 1):
-            f.write(f"{i}. {names[idx]} (cos={sim_least[idx]:.3f})\\\\\n")
+            f.write(f"{i} & {names[idx]} & {sim_least[idx]:.4f} \\\\\n")
 
     print(f"C: Saved LaTeX file: {save_path}")
 
@@ -191,23 +204,27 @@ def compute_centroid_similarity_zsl(logits, preds, ranked_clip, ranked_zsl, name
 
         # --- top-10 lists ---
         f.write("\\textbf{Top-10 similar classes for most predicted (CLIP):}\\\\\n")
+        f.write("\\textbf{Rank} & \\textbf{Class} & \\textbf{Cosine_Similarity}\\\\\n")
         for i, idx in enumerate(top10_most_clip, 1):
-            f.write(f"{i}. {names[idx]} (cos={sim_most_clip[idx]:.3f})\\\\\n")
+            f.write(f"{i} & {names[idx]} & {sim_most_clip[idx]:.4f} \\\\\n")
         f.write("\n")
 
         f.write("\\textbf{Top-10 similar classes for least predicted (CLIP):}\\\\\n")
+        f.write("\\textbf{Rank} & \\textbf{Class} & \\textbf{Cosine_Similarity}\\\\\n")
         for i, idx in enumerate(top10_least_clip, 1):
-            f.write(f"{i}. {names[idx]} (cos={sim_least_clip[idx]:.3f})\\\\\n")
+            f.write(f"{i} & {names[idx]} & {sim_least_clip[idx]:.4f} \\\\\n")
         f.write("\n")
 
         f.write("\\textbf{Top-10 similar classes for most predicted (ZSL):}\\\\\n")
+        f.write("\\textbf{Rank} & \\textbf{Class} & \\textbf{Cosine_Similarity}\\\\\n")
         for i, idx in enumerate(top10_most_zsl, 1):
-            f.write(f"{i}. {names[idx]} (cos={sim_most_zsl[idx]:.3f})\\\\\n")
+            f.write(f"{i} & {names[idx]} & {sim_most_zsl[idx]:.4f} \\\\\n")
         f.write("\n")
 
         f.write("\\textbf{Top-10 similar classes for least predicted (ZSL):}\\\\\n")
+        f.write("\\textbf{Rank} & \\textbf{Class} & \\textbf{Cosine_Similarity}\\\\\n")
         for i, idx in enumerate(top10_least_zsl, 1):
-            f.write(f"{i}. {names[idx]} (cos={sim_least_zsl[idx]:.3f})\\\\\n")
+            f.write(f"{i} & {names[idx]} & {sim_least_zsl[idx]:.4f} \\\\\n")
         f.write("\n")
 
     print(f"C: Saved LaTeX file: {save_path}")
